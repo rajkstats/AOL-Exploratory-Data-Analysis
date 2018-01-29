@@ -1,0 +1,556 @@
+---
+title: "Exploratory Data Analysis of 'AOL Logs' "
+author: "RAJ KUMAR"
+date: "April 14, 2017"
+output: 
+  pdf_document:
+    highlight: zenburn
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Challenge : AOL Search Logs
+
+Clear Environment
+
+```{r}
+rm(list=ls())
+
+```
+
+Loading packages needed
+
+```{r message=FALSE}
+
+library(data.table)
+library(stringi)
+library(sqldf)
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(qdap)
+library(tm)
+library(knitr)
+library(rmarkdown)
+```
+
+Reading Data into R where fields are tab separated
+
+```{r}
+df<-read.csv("/home/raj/Downloads/C1X/DC/user-ct-test-collection-02.txt",
+             header = TRUE,sep="\t")
+
+```
+
+Converting to data table
+
+```{r}
+df<-as.data.table(df)
+```
+
+Data Cleaning :URL Cleaning
+```{r}
+df$ClickURLCleaned<-gsub(df$ClickURL,pattern = "http://|https://|www\\.",replacement = "")
+```
+```{r}
+
+```
+
+Changing Class of datetime from factor to datetime
+
+```{r}
+df$QueryTime<-as.POSIXct(df$QueryTime)
+```
+
+#Summary Statistics
+
+Total no. of Queries
+```{r}
+total_queries<-as.numeric(nrow(df))
+total_queries
+```
+
+Instances of New Queries / Unique queries in the log
+```{r}
+new_queries <- as.numeric(length(unique(df$Query)))
+new_queries
+```
+
+Total Unique Users
+```{r}
+unique_users<-length(unique(df$AnonID))
+unique_users
+```
+Using simple calculations, I came to a conclusion a user fires at least 19 queries in the log
+
+```{r}
+query_per_user <- new_queries/unique_users
+query_per_user
+```
+
+**Calculating Next Page Requests** :
+As per AOL,if the user requested the next "page" or results for some query, this appears as a subsequent identical query with a later time stamp
+
+```{r message=FALSE}
+query<-"SELECT AnonID,Query,COUNT(*)as Count FROM df GROUP BY AnonID,Query"
+next_page_req<-as.data.table(sqldf(query))
+next_page_req<-next_page_req[next_page_req$Count>1,]
+```
+
+Looking at Next Page Requests
+```{r}
+head(next_page_req,10)
+#Number of Next Page Requests
+nrow(next_page_req)
+```
+
+
+**Total Unique URLS Count**
+```{r}
+unique_urls<-as.numeric(length(unique(df$ClickURLCleaned)))
+unique_urls
+```
+
+**CLick-through events**: Those queries on which users has acted by clicking on one of the links in the results
+```{r}
+click_through_events<-as.numeric(length(which(!is.na(df$ItemRank))))
+click_through_events
+```
+
+**Queries w/o click through:Those queries on which users has not taken any action**
+```{r}
+without_click_through_events<-as.numeric(length(which(is.na(df$ItemRank))))
+without_click_through_events
+```
+
+# Detection of Missing  Data 
+
+*Extracting date to an another column* 
+```{r}
+df$Date<-format(as.Date((df$QueryTime)), "%Y-%m-%d") 
+```
+
+*Total days of data*
+```{r}
+difftime(min(df$Date),max(df$Date),units = "days")
+```
+
+Total log in days = 93 days including the first day
+```{r}
+date_range<-seq(as.Date(min(df$Date)), by = "day",length.out = 93)
+```
+
+**Unique Dates in Log data**
+```{r}
+unique_dates<- as.Date(unique(df$Date))
+unique_dates
+```
+
+**Results whether any data is missing from any date from start date of logs and end date of logs
+```{r}
+missing_dates<-which(!(unique_dates %in% date_range))
+missing_dates
+```
+
+
+```{r}
+length(missing_dates)
+```
+**Result:** This implies there is no missing search query logs for any date
+
+**Queries Per Day**
+```{r}
+query<-"SELECT Date,Count(*) as Queries_per_day FROM df GROUP BY Date ORDER BY Date"
+query_day<-sqldf(query)
+query_day$Date<-as.Date(query_day$Date)
+```
+
+*Summarizing Query per day*
+```{r}
+summary(query_day)
+```
+
+*Minimum queries in a day*
+```{r}
+min(query_day$Queries_per_day)
+```
+
+*Maximumn queries in a day*
+```{r}
+max(query_day$Queries_per_day)
+```
+
+On an average 38036 queries are fired in a day 
+```{r}
+query_day
+```
+
+We observe that on 2006-02-28 & 2006-05-17 only 4330 & 4411 queries were fired respectively on search engine which indicates may be some technical reason that data is not logged which is unusual as per usual behavior of users or may be servers were down which resulted in not logging of data  while users were browsing
+
+
+##Sessionizing the Query Log data 
+###Time-oriented approaches
+Defining **Session** : more than 30 minutes between events is a new session
+
+```{r}
+df$qt<-as.POSIXct(df$QueryTime)
+df<-df[, session_id:=paste(cumsum((c(0, diff(qt))/60 > 30)*1)), by=AnonID]
+df$session_id<-as.numeric(df$session_id)
+total_sessions<-sum(df$session_id)
+#Total no. of sessions in 93 days time period
+total_sessions
+```
+
+On an average, each session last for at least 32.8 mins 
+```{r}
+summary(df$session_id)
+```
+
+
+## *Summarizing Queries requested at Period of day*
+Segmenting hours of day into different periods
+0-7 <- Night
+7-10 <- morning
+10-12 <- Noon
+12-17 <- Afternoon
+17-23 <- Evening
+
+```{r}
+hour<-as.numeric(format(df$QueryTime, '%H'))
+df <- data.table(df,hour=hour,period=cut(hour, c(-Inf, 7, 10, 12, 17, Inf),
+      labels=c("night", "morning", "noon", "afternoon", "evening")))
+```
+##Detection of Outliers
+
+* Outliers and robots sessions were removed before analysis
+* Outliers are long term user sessions containing too many queries which were probably generated by robots .So, Removing user sessions with highest no. of queries (top~1000)
+
+```{r}
+query<-"SELECT AnonID,session_id,COUNT(*)as Count FROM df 
+GROUP BY AnonID,session_id ORDER BY Count DESC"
+potential_outliers<-as.data.table(sqldf(query))
+outliers<-head(potential_outliers,1000)
+```
+
+Number of Outliers we are going to remove
+```{r}
+length(unique(outliers$AnonID))
+out_id<-unique(outliers$AnonID)
+```
+
+361455 such records are robots or identified as outliers
+
+```{r}
+length(which(df$AnonID %in% out_id))
+
+pos<-which(df$AnonID %in% out_id)
+
+#Removing outliers from data frame
+df<-df[-pos]
+```
+
+```{r}
+#Day wise Queries Trend
+df$Day <- weekdays(as.Date(df$Date))
+query<-"SELECT Day,Count(DISTINCT(Query)) as queries_count FROM df
+GROUP BY Day ORDER BY queries_count DESC"
+query_weekday<-sqldf(query)
+```
+
+```{r ,fig.width = 16, fig.height = 7}
+barplot(query_weekday$queries_count,col=rainbow(20),
+main = "Queries on weekdays",xlab = "Weekdays"
+,names.arg = query_weekday$Day,
+ylim =range(pretty(c(0,300000))))
+```
+
+On Monday and Sunday there are most queries fired.
+and Friday and Saturday there are less queries fired being the weekend days 
+
+*Hour wise Queries Trend*
+```{r}
+query<-"SELECT Hour,Count(DISTINCT(Query)) as queries_count FROM df
+GROUP BY Hour ORDER BY queries_count DESC"
+query_hour<-sqldf(query)
+query_hour$queries_count<-as.numeric(query_hour$queries_count)
+```
+
+```{r,fig.width = 16, fig.height = 7}
+getOption("scipen")
+opt <- options("scipen" = 20)
+getOption("scipen")
+barplot(query_hour$queries_count,col=rainbow(20),main = "Queries hourwise",
+xlab = "Hours of Day",names.arg = query_hour$hour,ylim = range(pretty(c(11000,110000))))
+```
+
+We observe that most of the queries were fired around 8,7 & 10 in evening 
+and then in afternoon and very less users in morning time which is usual trend.
+
+
+*Session Analysis*: Session is defined as a sequence of consecutive queries submitted by a same user in sufficiently small time period(say 30 mins)
+
+*Query Period*
+```{r}
+query<-"SELECT period,Count(DISTINCT(AnonID)) as unique_users,
+SUM(session_id) as total_sessions,Count(*) as queries_count FROM df 
+GROUP BY period ORDER BY queries_count DESC"
+query_period<-sqldf(query)
+query_period$per_users<-(query_period$unique_users/unique_users)*100
+
+# 81% of users are active in evening and about 40% of users are active 
+#in night and morning.
+query_period
+
+query<-"SELECT session_id,Count(DISTINCT(Query)) as query_count FROM df 
+GROUP BY session_id"
+session_query<-sqldf(query)
+```
+
+Long sessions are likely during evening and afternonn and long breaks are more likely during night,noon and morning.
+
+
+* Session length is seen as a more accurate alternative to measuring *pageviews*
+* Sessions per user can be used as a measurement of **website usage**
+
+```{r}
+sqlquery<-"SELECT ClickURLCleaned,COUNT(DISTINCT(AnonID)) as users_count FROM df 
+GROUP BY ClickURLCleaned  ORDER BY users_count DESC"
+top_urls<-as.data.table(sqldf(sqlquery))
+top_urls<-top_urls[-1,]
+top_urls_plot<-head(top_urls,10)
+top_urls_plot$ClickURLCleaned<-gsub(top_urls_plot$ClickURLCleaned,
+                                    pattern = ".com",replacement = "")
+```
+
+```{r,fig.width = 16, fig.height = 7 }
+barplot(top_urls_plot$users_count,col=rainbow(20),main = "Top Urls"
+        ,xlab = "URL Name",names.arg = top_urls_plot$ClickURLCleaned)
+```
+
+
+# ** Typical Time Spent by users on Search Engine **
+```{r,fig.width = 16, fig.height = 7 }
+
+sqlquery<-"SELECT AnonID,SUM(session_id) as total_sessions FROM df 
+GROUP BY AnonID"
+time_spent<-sqldf(sqlquery)
+#On an average each user spent 1573 session where each session is of 30 mins 
+#on search engine AOL in 93 days time
+summary(time_spent)
+#Disribution of Time Spent by users on search engine
+plot(x=time_spent$AnonID,y=time_spent$total_sessions,
+xlab = "AnonID",ylab = "Total Session",
+main = "Distribution of time Spent by users on Search Engine")
+
+```
+
+
+#Analysing Queries that do not typically lead to click
+
+Collecting users who were *active* on most of the days
+```{r}
+sqlquery<-"SELECT AnonID,Count(DISTINCT(Date)) as date_count  
+FROM df GROUP BY AnonID ORDER BY date_count DESC"
+active_users<-as.data.table(sqldf(sqlquery))
+pos<-which(active_users$date_count>=50)
+active_users_anonid<-active_users$AnonID[pos]
+
+dt<-df[which(df$AnonID %in% active_users_anonid),]
+dt_click<-dt[!which(is.na(dt$ItemRank))]
+dt_noclick<-dt[which(is.na(dt$ItemRank))]
+
+dt_noclick$totalwords <- sapply(dt_noclick$Query, 
+function(x) length(unlist(strsplit(as.character(x), "\\W+"))))
+
+#On an average 3 words per query do not lead to click
+summary(dt_noclick$totalwords)
+
+
+dt_click<-dt[!which(is.na(dt$ItemRank))]
+
+dt_click$totalwords <- sapply(dt_click$Query, 
+function(x) length(unlist(strsplit(as.character(x), "\\W+"))))
+
+#We  can conclude in afternoon and evening , there are more clicks
+summary(dt_click$period)
+
+
+#We can come to the conclusion that if we keep number of words short in query  
+#that has a probable chance of converting to a click.
+
+dt_noclick$Query<-as.character(dt_noclick$Query)
+
+
+#No click words Analysis
+#I looked at finding the words with their corresponding frequency and then
+#checked those words whether they are misspelled or not
+words_noclick<- strsplit(dt_noclick$Query, "\\W")
+words_no_click<-unlist(words_noclick)
+freq<-table(words_no_click)
+freq1<-sort(freq, decreasing=TRUE)
+temp_table<-data.table(paste(names(freq1), freq1, sep=","))
+words_noclick<-data.table(do.call(rbind, strsplit(temp_table$V1, ',')))
+colnames(words_noclick)<-c("words","freq")
+#Using qdap package dictionary to find out whether a word is misspelled or not
+n_misspelled <- sapply(words_noclick$words, function(x){
+  length(which_misspelled(x, suggest = FALSE))
+})
+miss_spelled<-data.frame(words_noclick$words,words_noclick$freq,
+                         n_misspelled, row.names = NULL)
+miss_spelled<-data.table(miss_spelled)
+colnames(miss_spelled)<-c("word","freq","is_misspell")
+miss_spelled$word<-as.character(miss_spelled$word)
+miss_spelled$charlen<-nchar(miss_spelled$word)
+#Removing words of 1 length
+miss_spelled<-miss_spelled[-which(miss_spelled$charlen==1)]
+remove_words<-c("com","of","www","in","the","for","and","to","http",
+                "is","you","org","on","how","at","org")
+stop_words<-stopwords("english")
+#Removing functional words and stopwords
+miss_spelled<-miss_spelled[-which(miss_spelled$word %in% remove_words)]
+miss_spelled<-miss_spelled[-which(miss_spelled$word %in% stop_words)]
+
+miss_spelled_words_len<-sum(miss_spelled$is_misspell)
+total_words<-nrow(miss_spelled)
+
+head(miss_spelled,20)
+```
+
+* More than 72 percent of the words are incorrectly spelled that leads to no click
+* This implies product manager needs to deploy a spell correction feature on AOL for more clicks
+```{r}
+per_miss_spelled_words_noclick<-miss_spelled_words_len/total_words
+per_miss_spelled_words_noclick
+```
+
+##Queries that almost always lead to click
+```{r}
+df_click<-df[!which(is.na(df$ItemRank))]
+query<-"SELECT Query,Count(ItemRank) as clicks FROM dt_click 
+GROUP BY Query ORDER BY clicks DESC"
+query_clicks<-sqldf(query)
+query_clicks$Query<-gsub(query_clicks$Query,pattern = "www.|.com",replacement = "")
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+query_clicks$Query<-trim(query_clicks$Query)
+query_clicks<-query_clicks[-which(query_clicks=="-"),]
+query_clicks<-query_clicks[-which(query_clicks==""),]
+head(query_clicks,25)
+#Queries having average query length of 3 leads to a click
+summary(query_clicks)
+```
+
+##Types of Queries made by Active users at Night
+```{r}
+query<-"SELECT period,Query,Count(*) as count FROM dt_click
+GROUP BY Query ORDER BY count DESC"
+query_user<-sqldf(query)
+query_night<-query_user[which(query_user$period=="night"),]
+head(query_night,20)
+```
+* More Porn searches were seen at night
+
+##Types of Queries made by Active users around Afternoon
+```{r}
+query_aft<-query_user[which(query_user$period=="afternoon"),]
+head(query_aft,20)
+```
+* It shows  more of a shopping trend of users in afternoon going to sites like ebay,walmart,amazon
+
+
+##Common Queries of Active users 
+
+```{r}
+sqlquery<-"SELECT Query,Count(DISTINCT(AnonID)) as users_count FROM dt 
+GROUP BY Query ORDER BY users_count DESC"
+common_query<-as.data.table(sqldf(sqlquery))
+common_query<-common_query[-1,]
+common_query$Query<-gsub(common_query$Query,pattern = "www.|.com",replacement = "")
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+common_query$Query<-trim(common_query$Query)
+common_query<-common_query[-which(common_query$Query=="")]
+#Some Common Queries Below with the users counts against them
+head(common_query,25)
+wordcloud(words = common_query$Query, freq = common_query$users_count, min.freq = 50,
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+```
+
+
+
+
+#Relevance of Search Queries
+
+* Queries that do not seem to have relevant results must be having an higher item rank since users has to   navigate to next page, which results in increase in item rank
+
+* Maximum Item Rank
+
+```{r}
+rel<-df[which(!is.na(df$ItemRank)),]
+dim(rel)
+```
+
+* Maximum Item Rank is 500 which implies user browsed 500 next pages against a query
+
+```{r}
+max(rel$ItemRank)
+sqlquery<-"SELECT Query,ItemRank,Count(*) as count FROM rel GROUP BY Query 
+ORDER BY ItemRank DESC"
+no_rel_results<-as.data.table(sqldf(sqlquery))
+```
+
+#Top queries that do not seem to have relevant results along with Item Rank
+```{r}
+head(no_rel_results,20)
+```
+
+#Relevance of Queries can be measured using following metrics
+
+* *Stickiness* of users on websites will indicate relevance of search queries 
+* Session length is seen as a more accurate alternative to measuring page views
+* Sessions per user can be used as a measurement of *website usage*
+
+```{r}
+sqlquery<-"SELECT ClickURLCleaned,SUM(session_id) as total_sessions FROM df 
+GROUP BY ClickURLCleaned ORDER BY total_sessions DESC"
+web_usage<-as.data.table(sqldf(sqlquery))
+web_usage<-web_usage[-1,]
+head(web_usage,20)
+```
+
+
+This implies users browsing on AOL search engine look for other search engines and spend a lot of time on other search engines like google,yahoo and msn.
+So, AOL search engines is not performing well. 
+
+```{r}
+df_words<-df[-which(df$Query=="-")]
+df_words<-df[!which(is.na(df$ItemRank)),]
+df_words$totalwords <- sapply(df_words$Query, 
+function(x) length(unlist(strsplit(as.character(x), "\\W+"))))
+sqlquery<-"SELECT totalwords,ItemRank,Count(*) as count  
+FROM df_words GROUP BY totalwords ORDER BY ItemRank "
+words_rel<-as.data.table(sqldf(sqlquery))
+head(words_rel,10)
+```
+
+This implies a query of words having a count of 5 almost always convert to a click
+
+
+# **Insights** that I would like to share with **Product Manager** are:
+  + People who come to browse on AOL search engines are looking for other search engines like     google,yahoo & msn.
+  + spell correction feature should be added since 72% of words are incorrectly spelled by a users 
+  in queries that leads to a no click in collection of active users in 93 days.
+  + There are more Porn searches observed at night and shopping searches in afternoon.
+  + 81% of users are active in evening while 40% of users are active in morning and afternoon.
+    So, evening is the best time to target users for ad.
+  + At 7,8 and 10 in the evening most queries are fired, so the best time to show sponsored links
+    which would definitely results in conversion.
+  + Sunday and Monday are the best days in week to target users effectively.
+  + Looking at top urls we can say that users usually have an intent to ask questions when they come
+  online since they are broesing in ask, answers.
+  + Product manager should approach amazon for campaigns since it is the second top url searched 
+  on search engine by users.
+  + Queries having a word count of less than or equal to 5 almost always converts to a click.
+  

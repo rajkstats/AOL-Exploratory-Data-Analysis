@@ -1,5 +1,5 @@
 
-# Exploratory Data Analysis of AOL Search Query Logs
+## Exploratory Data Analysis of AOL Search Query Logs
 ----------------------------------------------
 
  ### About Dataset

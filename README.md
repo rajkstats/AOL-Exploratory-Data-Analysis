@@ -1,7 +1,8 @@
-# Data-Challenge
 
-Exploratory Data Analysis of Search Query Logs
+# Exploratory Data Analysis of AOL Search Query Logs
 ----------------------------------------------
+
+ - About Dataset
 500k User Session Collection
 
 The data set includes {AnonID, Query, QueryTime, ItemRank, ClickURL}

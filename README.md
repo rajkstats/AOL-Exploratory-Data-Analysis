@@ -2,8 +2,8 @@
 # EDA of AOL Search Query Logs
 
 
-# Problem:
-About Dataset : 500k User Session Collection
+# About Dataset:
+500k User Session Collection
 
 The data set includes {AnonID, Query, QueryTime, ItemRank, ClickURL}
 AnonID - an anonymous user ID number.

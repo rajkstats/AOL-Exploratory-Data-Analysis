@@ -2,7 +2,7 @@
 # EDA of AOL Search Query Logs
 
 
-# Data Source:
+### Data Source:
 500k User Session Collection
 
 The data set includes {AnonID, Query, QueryTime, ItemRank, ClickURL}

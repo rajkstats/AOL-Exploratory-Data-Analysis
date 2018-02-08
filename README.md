@@ -35,33 +35,32 @@ In the second case (click through), there is data in all five columns.  For clic
    - Minimum queries in a day : 4330
    - Maximumn queries in a day : 51990
 
-###### Average Queries in a Day:
+* Average Queries in a Day: 
 
 > We observe that on 2006-02-28 & 2006-05-17 only 4330 & 4411 (very few) queries were fired respectively on search engine
 which indicates may be some technical reason that data is not logged which is unusual as per usual behavior
 of users or may be servers were down which resulted in not logging of data while users were browsing
 
 #### b. What do you want to share with the Product Manager of Search based on exploratory analysis of this dataset?
-• People who come to browse on AOL search engines are looking for other search engines like google,yahoo
+- People who come to browse on AOL search engines are looking for other search engines like google,yahoo
 & msn.
-• spell correction feature should be added since 72% of words are incorrectly spelled by a users in queries
+- spell correction feature should be added since 72% of words are incorrectly spelled by a users in queries
 that leads to a no click in collection of active users in 93 days.
-• There are more Porn searches observed at night and shopping searches in afternoon.
-• 81% of users are active in evening while 40% of users are active in morning and afternoon. So, evening
+- There are more Porn searches observed at night and shopping searches in afternoon.
+- 81% of users are active in evening while 40% of users are active in morning and afternoon. So, evening
 is the best time to target users for ad.
-• At 7,8 and 10 in the evening most queries are fired, so the best time to show sponsored links which
+- At 7,8 and 10 in the evening most queries are fired, so the best time to show sponsored links which
 would definitely results in conversion.
-• Sunday and Monday are the best days in week to target users effectively.
-• Looking at top urls we can say that users usually have an intent to ask questions when they come
+- Sunday and Monday are the best days in week to target users effectively.
+- Looking at top urls we can say that users usually have an intent to ask questions when they come
 online since they are broesing in ask, answers.
 19
-• Product manager should approach amazon for campaigns since it is the second top url searched on
+- Product manager should approach amazon for campaigns since it is the second top url searched on
 search engine by users.
-• Queries having a word count of less than or equal to 5 almost always converts to a click
+- Queries having a word count of less than or equal to 5 almost always converts to a click
 
 
 #### c. What are some common queries ?
-![]
 -
 #### d. Which queries do not typically lead to a click ?
 -

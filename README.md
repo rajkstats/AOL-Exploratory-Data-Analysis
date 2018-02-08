@@ -33,7 +33,7 @@ In the second case (click through), there is data in all five columns.  For clic
    - Queries w/o click through:Those queries on which users has not taken any action
    - Unique Dates in Log data : 1634534
    - Minimum queries in a day : 4330
-   - Maximumn queries in a day : 51990
+   - Maximum queries in a day : 51990
 
 * Missing Data: 
 

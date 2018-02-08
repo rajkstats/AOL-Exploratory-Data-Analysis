@@ -1,5 +1,5 @@
 
-# Exploratory Data Analysis of AOL Search Query Logs
+# EDA of AOL Search Query Logs
 
 
 # Problem:

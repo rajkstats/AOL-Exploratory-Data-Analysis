@@ -19,6 +19,22 @@ Each line in the data represents one of two types of events:
 In the first case (query only) there is data in only the first three columns/fields -- namely AnonID, Query, and QueryTime (see above). 
 In the second case (click through), there is data in all five columns.  For click through events, the query that preceded the click through is included.  Note that if a user clicked on more than one result in the list returned from a single query, there will be TWO lines in the data to represent the two events.  Also note that if the user requested the next "page" or results for some query, this appears as a subsequent identical query with a later time stamp.
 
+### Problem Statements
 
-
+#### a. Extract relevant metrics, create visualizations, and share a few (2 to 3) insights that you find interesting.
+-
+#### b. What do you want to share with the Product Manager of Search based on exploratory analysis of this dataset?
+-
+#### c. What are some common queries ?
+-
+#### d. Which queries do not typically lead to a click ?
+-
+#### e. Which queries almost always lead to a click ?
+-
+#### f. Which queries do not seem to have relevant results ? You should define this in your own terms and back it up with data.
+-
+#### g. typical time spent by users on the search engine ? What does this distribution look like ?
+-
+#### h. What are the top urls that show up in results
+-
 

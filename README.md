@@ -61,7 +61,7 @@ search engine by users.
 
 
 #### c. What are some common queries ?
--
+![Visual](aol_visualization/common_queries.PNG)
 #### d. Which queries do not typically lead to a click ?
 -
 #### e. Which queries almost always lead to a click ?

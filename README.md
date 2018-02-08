@@ -1,9 +1,9 @@
 
-## Exploratory Data Analysis of AOL Search Query Logs
-----------------------------------------------
+# Exploratory Data Analysis of AOL Search Query Logs
 
- ### About Dataset
-500k User Session Collection
+
+# Problem:
+About Dataset : 500k User Session Collection
 
 The data set includes {AnonID, Query, QueryTime, ItemRank, ClickURL}
 AnonID - an anonymous user ID number.

@@ -80,7 +80,7 @@ search engine by users.
    ![Queries which always lead to click ](aol_visualization/clicks.PNG)
    
    - A Query of words having a count of 5 almost always convert to a click
-   > ![Queries which always lead to click ](aol_visualization/clicks.PNG)
+   > ![Queries which always lead to click ](aol_visualization/click_length.PNG)
       
 #### f. Which queries do not seem to have relevant results ? You should define this in your own terms and back it up with data.
 - Relevance of Search Queries
@@ -98,6 +98,8 @@ Maximum Item Rank is 500 which implies user browsed 500 next pages against a que
  - Stickiness of users on websites will indicate relevance of search queries
  -  Session length is seen as a more accurate alternative to measuring page views
  - Sessions per user can be used as a measurement of website usage
+ 
+ *Defining Session : more than 30 minutes between events is a new session *
 
  ![relevant queries ](aol_visualization/relevant_queries.PNG)
 

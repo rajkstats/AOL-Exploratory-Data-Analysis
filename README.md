@@ -73,19 +73,28 @@ search engine by users.
 #### d. Which queries do not typically lead to a click ?
    ![Queries do not typically lead to a click  ](aol_visualization/no_click.PNG)
 
+- More than 72 percent of the words are incorrectly spelled that leads to no click
+- This implies product manager needs to deploy a spell correction feature on AOL for more clicks
+
 #### e. Which queries almost always lead to a click ?
    ![Queries which always lead to click ](aol_visualization/clicks.PNG)
+   
+   - A Query of words having a count of 5 almost always convert to a click
+   > ![Queries which always lead to click ](aol_visualization/clicks.PNG)
       
 #### f. Which queries do not seem to have relevant results ? You should define this in your own terms and back it up with data.
 - Relevance of Search Queries
  > Queries that do not seem to have relevant results must be having an higher item rank since users has to
 navigate to next page, which results in increase in item rank. 
 
+Maximum Item Rank is 500 which implies user browsed 500 next pages against a query
+
    ![Queries which do not seem to have relevant results ](aol_visualization/top_queries_no_relevant_results.PNG)
    
-   More than 72 percent of the words are incorrectly spelled that leads to no click. This implies product manager needs to deploy a spell correction feature on AOL for more clicks. 
+ - More than 72 percent of the words are incorrectly spelled that leads to no click. 
+ - This implies product manager needs to deploy a spell correction feature on AOL for more clicks. 
    
-- Relevance of Queries can be measured using following metrics
+#### Relevance of Queries can be measured using following metrics
  - Stickiness of users on websites will indicate relevance of search queries
  -  Session length is seen as a more accurate alternative to measuring page views
  - Sessions per user can be used as a measurement of website usage

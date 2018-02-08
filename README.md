@@ -62,8 +62,10 @@ search engine by users.
 
 #### c. What are some common queries ?
    ![common_queries_word_cloud ](aol_visualization/common_queries_word_cloud.PNG)
+
 #### d. Which queries do not typically lead to a click ?
    ![Queries do not typically lead to a click  ](aol_visualization/no_click.PNG)
+
 #### e. Which queries almost always lead to a click ?
    ![Queries which always lead to click ](aol_visualization/clicks.PNG)
       
@@ -81,7 +83,7 @@ navigate to next page, which results in increase in item rank.
  -  Session length is seen as a more accurate alternative to measuring page views
  - Sessions per user can be used as a measurement of website usage
 
- ![distribution of time spent by users ](aol_visualization/relevant_queries.PNG)
+ ![relevant queries ](aol_visualization/relevant_queries.PNG)
 
 This implies users browsing on AOL search engine look for other search engines and spend a lot of time on
 other search engines like google,yahoo and msn. So, AOL search engines is not performing well.
@@ -94,17 +96,13 @@ other search engines like google,yahoo and msn. So, AOL search engines is not pe
 
 
 * Some Interesting Insights: *
-Top queries that do not seem to have relevant results along with Item Rank
 
-   ![distribution of time spent by users ](aol_visualization/distibution_time_spent.PNG)
-   
  Types of Queries made by Active users around Afternoon
       ![Queries made by Active users around Afternoon](aol_visualization/afternoon.PNG)
 
+It shows more of a shopping trend of users in afternoon going to sites like ebay,walmart,amazon
 
-  It shows more of a shopping trend of users in afternoon going to sites like ebay,walmart,amazon
-
- Types of Queries made by Active users at Night
+Types of Queries made by Active users at Night
    ![Queries made by Active users at Night ](aol_visualization/night_searches.PNG)
 
 More Porn searches were seen at night

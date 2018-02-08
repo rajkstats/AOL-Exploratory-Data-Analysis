@@ -2,7 +2,7 @@
 # EDA of AOL Search Query Logs
 
 
-# About Dataset:
+# Data Source:
 500k User Session Collection
 
 The data set includes {AnonID, Query, QueryTime, ItemRank, ClickURL}
@@ -120,13 +120,13 @@ other search engines like google,yahoo and msn. So, AOL search engines is not pe
 
 #### Queries By Weekdays
    ![Queries on Weekdays](aol_visualization/queries_weekdays.PNG)
-*Summarizing Queries requested at Period of day
-Segmenting hours of day into different periods
-0-7 <- Night 
-7-10 <- morning
-10-12 <- Noon 
-12-17 <-Afternoon 
-17-23 <- Evening:*
+
+##### Summarizing Queries requested at Period of day:  Segmenting hours of day into different periods
+- 0-7 <- Night 
+- 7-10 <- morning
+- 10-12 <- Noon 
+- 12-17 <-Afternoon 
+- 17-23 <- Evening
 
 #### Types of Queries made by Active users around Afternoon
    ![Queries made by Active users around Afternoon](aol_visualization/afternoon.PNG)
@@ -137,4 +137,6 @@ It shows more of a shopping trend of users in afternoon going to sites like ebay
    ![Queries made by Active users at Night ](aol_visualization/night_searches.PNG)
 
 More Porn searches were seen at night
+
+
 

@@ -68,7 +68,23 @@ search engine by users.
    ![Queries which always lead to click ](aol_visualization/clicks.PNG)
       
 #### f. Which queries do not seem to have relevant results ? You should define this in your own terms and back it up with data.
+- Relevance of Search Queries
+ > Queries that do not seem to have relevant results must be having an higher item rank since users has to
+navigate to next page, which results in increase in item rank. 
+
    ![Queries which do not seem to have relevant results ](aol_visualization/top_queries_no_relevant_results.PNG)
+   
+   More than 72 percent of the words are incorrectly spelled that leads to no click. This implies product manager needs to deploy a spell correction feature on AOL for more clicks. 
+   
+- Relevance of Queries can be measured using following metrics
+ - Stickiness of users on websites will indicate relevance of search queries
+ -  Session length is seen as a more accurate alternative to measuring page views
+ - Sessions per user can be used as a measurement of website usage
+
+ ![distribution of time spent by users ](aol_visualization/relevant_queries.PNG)
+
+This implies users browsing on AOL search engine look for other search engines and spend a lot of time on
+other search engines like google,yahoo and msn. So, AOL search engines is not performing well.
 
 #### g. typical time spent by users on the search engine ? What does this distribution look like ?
    ![distribution of time spent by users ](aol_visualization/distibution_time_spent.PNG)
@@ -76,4 +92,20 @@ search engine by users.
 #### h. What are the top urls that show up in results ?
    ![top urls ](aol_visualization/top_urls.PNG)
 
+
+* Some Interesting Insights: *
+Top queries that do not seem to have relevant results along with Item Rank
+
+   ![distribution of time spent by users ](aol_visualization/distibution_time_spent.PNG)
+   
+ Types of Queries made by Active users around Afternoon
+      ![Queries made by Active users around Afternoon](aol_visualization/afternoon.PNG)
+
+
+  It shows more of a shopping trend of users in afternoon going to sites like ebay,walmart,amazon
+
+ Types of Queries made by Active users at Night
+   ![Queries made by Active users at Night ](aol_visualization/night_searches.PNG)
+
+More Porn searches were seen at night
 

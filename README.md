@@ -94,15 +94,14 @@ other search engines like google,yahoo and msn. So, AOL search engines is not pe
 #### h. What are the top urls that show up in results ?
    ![top urls ](aol_visualization/top_urls.PNG)
 
+*Some Interesting Insights:*
 
-* Some Interesting Insights: *
-
- Types of Queries made by Active users around Afternoon
+#### Types of Queries made by Active users around Afternoon
       ![Queries made by Active users around Afternoon](aol_visualization/afternoon.PNG)
 
 It shows more of a shopping trend of users in afternoon going to sites like ebay,walmart,amazon
 
-Types of Queries made by Active users at Night
+#### Types of Queries made by Active users at Night
    ![Queries made by Active users at Night ](aol_visualization/night_searches.PNG)
 
 More Porn searches were seen at night

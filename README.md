@@ -63,13 +63,17 @@ search engine by users.
 #### c. What are some common queries ?
    ![common_queries_word_cloud ](aol_visualization/common_queries_word_cloud.PNG)
 #### d. Which queries do not typically lead to a click ?
--
+   ![Queries do not typically lead to a click  ](aol_visualization/no_click.PNG)
 #### e. Which queries almost always lead to a click ?
--
+   ![Queries which always lead to click ](aol_visualization/clicks.PNG)
+      
 #### f. Which queries do not seem to have relevant results ? You should define this in your own terms and back it up with data.
--
+   ![Queries which do not seem to have relevant results ](aol_visualization/top_queries_no_relevant_results.PNG)
+
 #### g. typical time spent by users on the search engine ? What does this distribution look like ?
--
-#### h. What are the top urls that show up in results
--
+   ![distribution of time spent by users ](aol_visualization/distibution_time_spent.PNG)
+
+#### h. What are the top urls that show up in results ?
+   ![top urls ](aol_visualization/top_urls.PNG)
+
 

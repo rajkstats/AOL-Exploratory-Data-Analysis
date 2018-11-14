@@ -136,7 +136,6 @@ It shows more of a shopping trend of users in afternoon going to sites like ebay
 #### Types of Queries made by Active users at Night
    ![Queries made by Active users at Night ](aol_visualization/night_searches.PNG)
 
-More Porn searches were seen at night
 
 
 

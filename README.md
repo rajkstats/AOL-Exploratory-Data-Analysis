@@ -3,6 +3,8 @@
 
 
 ### Data Source:
+http://www.cim.mcgill.ca/~dudek/206/Logs/AOL-user-ct-collection/user-ct-test-collection-02.txt.gz
+
 500k User Session Collection
 
 The data set includes {AnonID, Query, QueryTime, ItemRank, ClickURL}
